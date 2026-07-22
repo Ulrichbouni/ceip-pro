@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: ceip-backend
+    env: docker
+    repo: https://github.com/votre-username/ceip-pro
+    rootDir: backend
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: REDIS_URL
+        sync: false
