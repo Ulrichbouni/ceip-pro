@@ -3,13 +3,13 @@ import { supabase } from '../../lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function Login() {
+export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });

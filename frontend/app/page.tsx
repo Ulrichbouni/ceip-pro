@@ -3,30 +3,29 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { supabase } from '../lib/supabaseClient';
+import { useRouter } from 'next/navigation';
 
 const COUNTRIES = ['CMR', 'GAB', 'COG', 'TCD', 'CAF', 'GNQ'];
-const COUNTRY_NAMES = { CMR: '🇨🇲 Cameroun', GAB: '🇬🇦 Gabon', COG: '🇨🇬 Congo', TCD: '🇹🇩 Tchad', CAF: '🇨🇫 RCA', GNQ: '🇬🇶 Guinée Eq.' };
+const COUNTRY_NAMES: Record<string, string> = { CMR: '🇨🇲 Cameroun', GAB: '🇬🇦 Gabon', COG: '🇨🇬 Congo', TCD: '🇹🇩 Tchad', CAF: '🇨🇫 RCA', GNQ: '🇬🇶 Guinée Eq.' };
 
 export default function Home() {
-  const [user, setUser] = useState(null);
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
   const [country, setCountry] = useState('CMR');
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<any>(null);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Vérification session utilisateur
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
         setUser(data.session.user);
       } else {
-        // Redirection vers login si non connecté
-        window.location.href = '/login';
+        router.push('/login');
       }
     });
-  }, []);
+  }, [router]);
 
-  // Chargement des données
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -36,13 +35,16 @@ export default function Home() {
       });
       setData(res.data);
       setHistory(res.data.history || []);
-    } catch (e) { console.error(e); }
-    finally { setLoading(false); }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => { if (user) fetchData(); }, [country, user]);
 
-  const handleLogout = async () => { await supabase.auth.signOut(); window.location.href = '/login'; };
+  const handleLogout = async () => { await supabase.auth.signOut(); router.push('/login'); };
 
   if (!user) return <div style={{ textAlign: 'center', marginTop: 100 }}>Chargement...</div>;
 
