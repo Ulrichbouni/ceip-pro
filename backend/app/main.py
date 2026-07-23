@@ -12,7 +12,7 @@ SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
 
 # Base de données
-DATABASE_URL = SUPABASE_URL.replace("https://", f"https://{SUPABASE_KEY}@") + "/postgres"
+DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(bind=engine)
 
